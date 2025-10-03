@@ -1,8 +1,9 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System;
+using System.IO;
 
 namespace Logger
 {
-    internal class FileLogger : BaseLogger
+    public class FileLogger : BaseLogger
     {
         public string FilePath { get; set; }
         public FileLogger(string filePath)
@@ -11,7 +12,21 @@ namespace Logger
         }
         public override void Log(LogLevel logLevel, string message)
         {
-            // Implementation for logging to a file
+            // If the file does not exist, create it.
+            if (!File.Exists(FilePath))
+            {
+                using (StreamWriter sw = File.CreateText(FilePath))
+                {
+                    sw.WriteLine(message);
+                }
+            }
+            else
+            {
+                using (StreamWriter sw = File.AppendText(FilePath))
+                {
+                    sw.WriteLine(message);
+                }
+            }
         }
     }
 }
