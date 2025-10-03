@@ -2,9 +2,9 @@
 
 public class LogFactory
 {
-    public BaseLogger CreateLogger(string className)
+    public BaseLogger CreateLogger(string className, string filePath)
     {
-
-        return null;
+        return new FileLogger(filePath)
+        { LoggerClassName = className };
     }
 }
