@@ -32,12 +32,16 @@ public class FileLoggerTests
         CleanUpFile();
     }
 
+    private static FileLogger CreateFileLogger()
+    {
+        return new FileLogger(TestFilePath) { LoggerClassName = LoggerClassName };
+    }
+
     [TestMethod]
     public void FileLogger_Initializes_Success()
     {
         // act
-        FileLogger fileLogger = new FileLogger(TestFilePath) { LoggerClassName = LoggerClassName };
-
+        FileLogger fileLogger = CreateFileLogger();
         // assert
         Assert.AreEqual(TestFilePath, fileLogger.FilePath);
         Assert.AreEqual(LoggerClassName, fileLogger.LoggerClassName);
@@ -48,7 +52,7 @@ public class FileLoggerTests
     {
         // arrange
         string testMessage = "This is a test log message.";
-        FileLogger fileLogger = new FileLogger(TestFilePath) { LoggerClassName = LoggerClassName };
+        FileLogger fileLogger = CreateFileLogger();
         // act
         fileLogger.Log(LogLevel.Information, testMessage);
         // assert
@@ -64,7 +68,7 @@ public class FileLoggerTests
         string testMessage2 = "This is the second test log message.";
         string expectedLogMessage1 = $"[{now:yyyy-MM-dd HH:mm:ss}] [{LoggerClassName}] [Information] {testMessage1}";
         string expectedLogMessage2 = $"[{now:yyyy-MM-dd HH:mm:ss}] [{LoggerClassName}] [Information] {testMessage2}";
-        FileLogger fileLogger = new FileLogger(TestFilePath) { LoggerClassName = LoggerClassName };
+        FileLogger fileLogger = CreateFileLogger();
         // act
         fileLogger.Log(LogLevel.Information, testMessage1);
         fileLogger.Log(LogLevel.Information, testMessage2);
@@ -82,7 +86,7 @@ public class FileLoggerTests
         DateTime now = DateTime.Now;
         string testMessage = "This is a test log message.";
         string expectedLogMessage = $"[{now:yyyy-MM-dd HH:mm:ss}] [{LoggerClassName}] [Information] {testMessage}";
-        FileLogger fileLogger = new FileLogger(TestFilePath) { LoggerClassName = LoggerClassName };
+        FileLogger fileLogger = CreateFileLogger();
         // act
         fileLogger.Log(LogLevel.Information, testMessage);
         // assert
