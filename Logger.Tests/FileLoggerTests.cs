@@ -1,4 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using System;
 using System.IO;
 
 namespace Logger.Tests;
@@ -48,10 +50,13 @@ public class FileLoggerTests
     public void Log_AppendsMessageToFile_Success()
     {
         // arrange
+        DateTime now = DateTime.Now;
         string testFilePath = "./testlog.txt";
         string LoggerClassName = "TestFileLogger";
         string testMessage1 = "This is the first test log message.";
         string testMessage2 = "This is the second test log message.";
+        string expectedLogMessage1 = $"[{now:yyyy-MM-dd HH:mm:ss}] [{LoggerClassName}] [Information] {testMessage1}";
+        string expectedLogMessage2 = $"[{now:yyyy-MM-dd HH:mm:ss}] [{LoggerClassName}] [Information] {testMessage2}";
         if (File.Exists(testFilePath))
         {
             File.Delete(testFilePath);
@@ -63,8 +68,34 @@ public class FileLoggerTests
         // assert
         string[] logContents = File.ReadAllLines(testFilePath);
         Assert.AreEqual(2, logContents.Length, "Log file does not contain expected number of entries");
-        Assert.AreEqual(testMessage1, logContents[0], "First log message does not match");
-        Assert.AreEqual(testMessage2, logContents[1], "Second log message does not match");
+        Assert.AreEqual(expectedLogMessage1, logContents[0], "First log message does not match");
+        Assert.AreEqual(expectedLogMessage2, logContents[1], "Second log message does not match");
+        // cleanup
+        if (File.Exists(testFilePath))
+        {
+            File.Delete(testFilePath);
+        }
+    }
+
+    [TestMethod]
+    public void Log_MessageIsCorrect_Success()
+    { 
+        // arrange
+        DateTime now = DateTime.Now;
+        string testFilePath = "./testlog.txt";
+        string LoggerClassName = "TestFileLogger";
+        string testMessage = "This is a test log message.";
+        string expectedLogMessage = $"[{now:yyyy-MM-dd HH:mm:ss}] [{LoggerClassName}] [Information] {testMessage}";
+        if (File.Exists(testFilePath))
+        {
+            File.Delete(testFilePath);
+        }
+        FileLogger fileLogger = new FileLogger(testFilePath) { LoggerClassName = LoggerClassName };
+        // act
+        fileLogger.Log(LogLevel.Information, testMessage);
+        // assert
+        string[] logContents = File.ReadAllLines(testFilePath);
+        Assert.AreEqual(expectedLogMessage, logContents[0]);
         // cleanup
         if (File.Exists(testFilePath))
         {

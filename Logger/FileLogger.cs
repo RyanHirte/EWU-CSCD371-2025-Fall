@@ -12,19 +12,21 @@ namespace Logger
         }
         public override void Log(LogLevel logLevel, string message)
         {
+            DateTime now = DateTime.Now;
+            string logEntry = $"[{now:yyyy-MM-dd HH:mm:ss}] [{LoggerClassName}] [{logLevel}] {message}";
             // If the file does not exist, create it.
             if (!File.Exists(FilePath))
             {
                 using (StreamWriter sw = File.CreateText(FilePath))
                 {
-                    sw.WriteLine(message);
+                    sw.WriteLine(logEntry);
                 }
             }
             else
             {
                 using (StreamWriter sw = File.AppendText(FilePath))
                 {
-                    sw.WriteLine(message);
+                    sw.WriteLine(logEntry);
                 }
             }
         }
