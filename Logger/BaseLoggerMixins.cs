@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace Logger;
 
@@ -9,7 +10,7 @@ public static class BaseLoggerMixins
         ArgumentNullException.ThrowIfNull(logger);
 
         if (args.Length > 0)
-            message = string.Format(message, args);
+            message = string.Format(CultureInfo.InvariantCulture, message, args);
 
         logger.Log(LogLevel.Error, message);
     }
@@ -18,7 +19,7 @@ public static class BaseLoggerMixins
         ArgumentNullException.ThrowIfNull(logger);
 
         if (args.Length > 0)
-            message = string.Format(message, args);
+            message = string.Format(CultureInfo.InvariantCulture, message, args);
 
         logger.Log(LogLevel.Warning, message);
     }
@@ -27,7 +28,7 @@ public static class BaseLoggerMixins
         ArgumentNullException.ThrowIfNull(logger);
 
         if (args.Length > 0)
-            message = string.Format(message, args);
+            message = string.Format(CultureInfo.InvariantCulture, message, args);
 
         logger.Log(LogLevel.Information, message);
     }
@@ -36,7 +37,7 @@ public static class BaseLoggerMixins
         ArgumentNullException.ThrowIfNull(logger);
 
         if (args.Length > 0)
-            message = string.Format(message, args);
+            message = string.Format(CultureInfo.InvariantCulture, message, args);
 
         logger.Log(LogLevel.Debug, message);
     }
