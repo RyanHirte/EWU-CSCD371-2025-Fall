@@ -26,7 +26,7 @@ public class LogFactoryTests
     }
 
     [TestMethod]
-    public void CreateLogger_NotConfigured_ThrowsException()
+    public void CreateLogger_NotConfigured_ReturnsNull()
     {
         // Arrange
         LogFactory logFactory = new();
