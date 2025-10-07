@@ -1,10 +1,27 @@
-﻿namespace Logger;
+﻿using System;
+
+namespace Logger;
 
 public class LogFactory
 {
-    public BaseLogger CreateLogger(string className, string filePath)
+    private string? _configuredFilePath; // ? for nullable, _ for private
+
+    public BaseLogger? CreateLogger(string className)
     {
-        return new FileLogger(filePath)
-        { LoggerClassName = className };
+        if (_configuredFilePath == null) // return null if not configured
+            return null;
+
+        return new FileLogger(_configuredFilePath)
+        {
+            LoggerClassName = className
+        };
+    }
+
+    public void ConfigureFileLogger(string path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            throw new ArgumentException("File path cannot be null or whitespace: ", nameof(path));
+
+        _configuredFilePath = path;
     }
 }

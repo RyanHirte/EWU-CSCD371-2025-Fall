@@ -12,7 +12,7 @@ public class FileLoggerTests
     private const string TestFilePath = "./testlog.txt";
     private const string LoggerClassName = "TestFileLogger";
 
-    private void CleanUpFile()
+    private static void CleanUpFile()
     {
         if (File.Exists(TestFilePath))
         {
