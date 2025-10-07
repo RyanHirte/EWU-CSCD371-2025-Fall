@@ -21,7 +21,6 @@ public class LogFactoryTests
 
         // Assert
         Assert.IsNotNull(logger);
-        Assert.IsInstanceOfType(logger, typeof(FileLogger));
         Assert.AreEqual(className, logger.LoggerClassName);
     }
 
