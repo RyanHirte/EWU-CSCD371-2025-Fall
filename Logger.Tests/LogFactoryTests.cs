@@ -17,7 +17,7 @@ public class LogFactoryTests
         logFactory.ConfigureFileLogger(filePath);
 
         // Act
-        var logger = logFactory.CreateLogger(className);
+        BaseLogger? logger = logFactory.CreateLogger(className);
 
         // Assert
         Assert.IsNotNull(logger);
@@ -33,7 +33,7 @@ public class LogFactoryTests
         // no configuring
 
         // Act
-        var logger = logFactory.CreateLogger(className);
+        BaseLogger? logger = logFactory.CreateLogger(className);
 
         // Assert
         Assert.IsNull(logger);
