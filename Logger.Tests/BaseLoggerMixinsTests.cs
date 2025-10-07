@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using Logger;
 
 namespace Logger.Tests;
 
@@ -93,7 +92,7 @@ public class BaseLoggerMixinsTests
         Assert.AreEqual(LogLevel.Information, logger.LoggedMessages[0].LogLevel);
         Assert.AreEqual("Message 44", logger.LoggedMessages[0].Message);
     }
-    
+
     [TestMethod]
     public void Debug_WithData_LogsMessage()
     {
@@ -107,6 +106,21 @@ public class BaseLoggerMixinsTests
         Assert.AreEqual(1, logger.LoggedMessages.Count);
         Assert.AreEqual(LogLevel.Debug, logger.LoggedMessages[0].LogLevel);
         Assert.AreEqual("Message 45", logger.LoggedMessages[0].Message);
+    }
+    
+    [TestMethod]
+    public void Information_WithNoArgs_PassesMessageUnchanged()
+    {
+        // Arrange
+        var logger = new TestLogger { LoggerClassName = "TestLogger" };
+
+        // Act
+        logger.Information("Hello world");
+
+        // Assert
+        Assert.AreEqual(1, logger.LoggedMessages.Count);
+        Assert.AreEqual(logger.LoggedMessages[0].LogLevel, LogLevel.Information);
+        Assert.AreEqual("Hello world", logger.LoggedMessages[0].Message);
     }
 }
 

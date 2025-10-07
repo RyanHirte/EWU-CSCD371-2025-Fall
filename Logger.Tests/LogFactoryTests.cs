@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using System;
+
 namespace Logger.Tests;
 
 [TestClass]
@@ -10,13 +12,31 @@ public class LogFactoryTests
     {
         // Arrange
         LogFactory logFactory = new();
-        // string className = "TestClass";
-        // string filePath = "Testpath";
+        string className = "TestClass";
+        string filePath = "Testpath";
+        logFactory.ConfigureFileLogger(filePath);
 
         // Act
-        // var logger = logFactory.CreateLogger(className, filePath);
+        var logger = logFactory.CreateLogger(className);
 
         // Assert
-        // Assert.AreEqual(className, logger.LoggerClassName);
+        Assert.IsNotNull(logger);
+        Assert.IsInstanceOfType(logger, typeof(FileLogger));
+        Assert.AreEqual(className, logger.LoggerClassName);
+    }
+
+    [TestMethod]
+    public void CreateLogger_NotConfigured_ThrowsException()
+    {
+        // Arrange
+        LogFactory logFactory = new();
+        string className = "TestClass";
+        // no configuring
+
+        // Act
+        var logger = logFactory.CreateLogger(className);
+
+        // Assert
+        Assert.IsNull(logger);
     }
 }
