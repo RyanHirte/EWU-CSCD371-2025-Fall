@@ -1,4 +1,5 @@
 using System;
+using CanHazFunny;
 
 
 //make a Jester object implementing the interfaces
@@ -9,21 +10,20 @@ using System;
 
 public class Jester
 {
-    private InterfaceJokeService JokeService { get; }
-    private InterfaceOutputService OutputService { get; }
+    private InterfaceJokeService _JokeService { get; }
+    private InterfaceOutputService _OutputService { get; }
     public Jester(InterfaceJokeService jokeService, InterfaceOutputService outputService)
     {
-        JokeService = jokeService;
-        OutputService = outputService;
+        _JokeService = jokeService;
+        _OutputService = outputService;
     }
     public void TellJoke()
     {
-        string joke = JokeService.GetJoke();
+        string joke = _JokeService.GetJoke();
         while (!joke.Contains("Chuck Norris"))
         {
-            joke = JokeService.GetJoke();
+            joke = _JokeService.GetJoke();
         }
-        OutputService.WriteJoke(joke);
+        _OutputService.WriteJoke(joke);
     }
-
 }
