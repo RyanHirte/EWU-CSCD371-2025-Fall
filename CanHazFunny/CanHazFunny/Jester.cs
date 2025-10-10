@@ -4,10 +4,10 @@ using CanHazFunny;
 
 public class Jester
 {
-    private InterfaceJokeService JokeService { get; }
+    private IJokeService JokeService { get; }
     private IOutputService OutputService { get; }
     
-    public Jester(InterfaceJokeService jokeService, IOutputService outputService)
+    public Jester(IJokeService jokeService, IOutputService outputService)
     {
         JokeService = jokeService ?? throw new ArgumentNullException(nameof(jokeService));
         OutputService = outputService ?? throw new ArgumentNullException(nameof(outputService));

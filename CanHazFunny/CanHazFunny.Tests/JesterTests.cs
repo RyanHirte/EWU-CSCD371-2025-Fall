@@ -10,7 +10,7 @@ public class JesterTests
     public void Constructor_CorrectParams_CreatesJester()
     {
         // Arrange
-        var jokeService = new Mock<InterfaceJokeService>().Object;
+        var jokeService = new Mock<IJokeService>().Object;
         var outputService = new Mock<IOutputService>().Object;
         // Act
         var jester = new Jester(jokeService, outputService);
@@ -22,7 +22,7 @@ public class JesterTests
     public void Constructor_NullParams_ThrowsArgumentNullException()
     {
         // Arrange
-        var jokeService = new Mock<InterfaceJokeService>().Object;
+        var jokeService = new Mock<IJokeService>().Object;
         var outputService = new Mock<IOutputService>().Object;
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => new Jester(null!, outputService));
@@ -33,7 +33,7 @@ public class JesterTests
     public void TellJoke_NormalJoke_WritesJoke()
     {
         // Arrange
-        var jokeServiceMock = new Mock<InterfaceJokeService>();
+        var jokeServiceMock = new Mock<IJokeService>();
         var outputServiceMock = new Mock<IOutputService>();
         
         var normalJoke = "Why did the programmer quit his job? Because he didn't get arrays.";
@@ -53,7 +53,7 @@ public class JesterTests
     public void TellJoke_ChuckNorrisJoke_RetriesUntilNormalJoke()
     {
         // Arrange
-        var jokeServiceMock = new Mock<InterfaceJokeService>();
+        var jokeServiceMock = new Mock<IJokeService>();
         var outputServiceMock = new Mock<IOutputService>();
         
         var chuckNorrisJoke = "Chuck Norris can divide by zero.";
