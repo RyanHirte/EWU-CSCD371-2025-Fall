@@ -4,8 +4,8 @@ namespace CanHazFunny;
 
 public class ConsoleOutputService : IOutputService
 {
-    public void WriteJoke(string message)
+    public void WriteJoke(string joke)
     {
-        Console.WriteLine(message);
+        Console.WriteLine(joke);
     }
 }

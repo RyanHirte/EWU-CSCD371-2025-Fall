@@ -1,6 +1,7 @@
 using System;
 using CanHazFunny;
 
+namespace CanHazFunny;
 
 public class Jester
 {
