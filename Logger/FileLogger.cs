@@ -5,9 +5,13 @@ namespace Logger
 {
     public class FileLogger : BaseLogger
     {
-        public string FilePath { get; set; }
+        public string FilePath { get; }
+
         public FileLogger(string filePath)
         {
+            if (string.IsNullOrWhiteSpace(filePath))
+                throw new ArgumentException($"File path cannot be null or whitespace: '{filePath}'", nameof(filePath));
+
             FilePath = filePath;
         }
         public override void Log(LogLevel logLevel, string message)
