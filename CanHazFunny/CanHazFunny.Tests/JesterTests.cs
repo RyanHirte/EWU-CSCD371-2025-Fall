@@ -11,7 +11,7 @@ public class JesterTests
     {
         // Arrange
         var jokeService = new Mock<InterfaceJokeService>().Object;
-        var outputService = new Mock<InterfaceOutputService>().Object;
+        var outputService = new Mock<IOutputService>().Object;
         // Act
         var jester = new Jester(jokeService, outputService);
         // Assert
@@ -23,7 +23,7 @@ public class JesterTests
     {
         // Arrange
         var jokeService = new Mock<InterfaceJokeService>().Object;
-        var outputService = new Mock<InterfaceOutputService>().Object;
+        var outputService = new Mock<IOutputService>().Object;
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => new Jester(null!, outputService));
         Assert.Throws<ArgumentNullException>(() => new Jester(jokeService, null!));
@@ -34,7 +34,7 @@ public class JesterTests
     {
         // Arrange
         var jokeServiceMock = new Mock<InterfaceJokeService>();
-        var outputServiceMock = new Mock<InterfaceOutputService>();
+        var outputServiceMock = new Mock<IOutputService>();
         
         var normalJoke = "Why did the programmer quit his job? Because he didn't get arrays.";
         jokeServiceMock.Setup(x => x.GetJoke()).Returns(normalJoke);
@@ -54,7 +54,7 @@ public class JesterTests
     {
         // Arrange
         var jokeServiceMock = new Mock<InterfaceJokeService>();
-        var outputServiceMock = new Mock<InterfaceOutputService>();
+        var outputServiceMock = new Mock<IOutputService>();
         
         var chuckNorrisJoke = "Chuck Norris can divide by zero.";
         var normalJoke = "Why do programmers prefer dark mode? Because light attracts bugs.";
