@@ -35,10 +35,10 @@ public class JesterTests
         // Arrange
         var jokeServiceMock = new Mock<IJokeService>();
         var outputServiceMock = new Mock<IOutputService>();
-        
+
         var normalJoke = "Why did the programmer quit his job? Because he didn't get arrays.";
         jokeServiceMock.Setup(x => x.GetJoke()).Returns(normalJoke);
-            
+
         var jester = new Jester(jokeServiceMock.Object, outputServiceMock.Object);
 
         // Act
@@ -55,7 +55,7 @@ public class JesterTests
         // Arrange
         var jokeServiceMock = new Mock<IJokeService>();
         var outputServiceMock = new Mock<IOutputService>();
-        
+
         var chuckNorrisJoke = "Chuck Norris can divide by zero.";
         var normalJoke = "Why do programmers prefer dark mode? Because light attracts bugs.";
 
@@ -63,7 +63,7 @@ public class JesterTests
             .Returns(chuckNorrisJoke)
             .Returns(chuckNorrisJoke)
             .Returns(normalJoke);
-            
+
         var jester = new Jester(jokeServiceMock.Object, outputServiceMock.Object);
         // Act
         jester.TellJoke();
