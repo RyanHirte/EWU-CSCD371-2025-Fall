@@ -16,10 +16,10 @@ public class Jester
     public void TellJoke()
     {
         string joke = JokeService.GetJoke();
-        while (joke.Contains("Chuck Norris"))
+        while (joke != null && joke.IndexOf("Chuck Norris", StringComparison.OrdinalIgnoreCase) >= 0)
         {
             joke = JokeService.GetJoke();
         }
-        OutputService.WriteJoke(joke);
+        OutputService.WriteJoke(joke ?? string.Empty);
     }
 }
