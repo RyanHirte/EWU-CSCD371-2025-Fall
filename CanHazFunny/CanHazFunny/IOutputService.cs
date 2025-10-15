@@ -1,8 +1,10 @@
 namespace CanHazFunny;
 
-// interface to output jokes
 public interface IOutputService
 {
-    // output the joke
+    /// <summary>
+    /// Writes a joke to the output destination.
+    /// </summary>
+    /// <param name="joke">The joke text to write. Can be empty string.</param>
     void WriteJoke(string joke);
 }

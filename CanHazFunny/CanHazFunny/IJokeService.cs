@@ -1,8 +1,10 @@
 namespace CanHazFunny;
 
-// interface for retrieving jokes 
 public interface IJokeService
 {
-    // retrieves the joke and returns it in a string
+    /// <summary>
+    /// Gets a random joke from the joke service.
+    /// </summary>
+    /// <returns>A string containing a random joke. If no jokes are available, returns an empty string.</returns>
     string GetJoke();
 }
