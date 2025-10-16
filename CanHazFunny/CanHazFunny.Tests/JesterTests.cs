@@ -71,4 +71,21 @@ public class JesterTests
         jokeServiceMock.Verify(x => x.GetJoke(), Times.Exactly(3));
         outputServiceMock.Verify(x => x.WriteJoke(normalJoke), Times.Once);
     }
+
+    [Fact]
+    public void TellJoke_OnlyChuckNorrisJokes_AfterMaxRetries_WritesApology()
+    {
+        // Arrange
+        var jokeServiceMock = new Mock<IJokeService>();
+        var outputServiceMock = new Mock<IOutputService>();
+        var chuckNorrisJoke = "Chuck Norris can divide by zero.";
+        var apologyMessage = "Sorry, couldn't find a non-Chuck Norris joke after 50 attempts.";
+        jokeServiceMock.Setup(x => x.GetJoke()).Returns(chuckNorrisJoke);
+        var jester = new Jester(jokeServiceMock.Object, outputServiceMock.Object);
+        // Act
+        jester.TellJoke();
+        // Assert
+        jokeServiceMock.Verify(x => x.GetJoke(), Times.Exactly(51));
+        outputServiceMock.Verify(x => x.WriteJoke(apologyMessage), Times.Once);
+    }
 }
