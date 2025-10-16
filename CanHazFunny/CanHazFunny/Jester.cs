@@ -15,11 +15,21 @@ public class Jester
 
     public void TellJoke()
     {
+        const int maxRetries = 50;
+        int retries = 0;
         string joke = JokeService.GetJoke();
-        while (joke.Contains("Chuck Norris", StringComparison.OrdinalIgnoreCase))
+        while (joke.Contains("Chuck Norris") && retries < maxRetries)
         {
             joke = JokeService.GetJoke();
+            retries++;
         }
-        OutputService.WriteJoke(joke);
+        if (joke.Contains("Chuck Norris"))
+        {
+            OutputService.WriteJoke("Sorry, couldn't find a non-Chuck Norris joke after 50 attempts.");
+        }
+        else
+        {
+            OutputService.WriteJoke(joke);
+        }
     }
 }
