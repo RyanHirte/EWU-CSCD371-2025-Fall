@@ -1,16 +1,17 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Assignment;
 
 // Taken from Ryan Hirte and Yoko Parks assignment 5
-public class NodeCollection<T>
+public class Node<T> : IEnumerable<T>
 {
     public T Value { get; set; }
 
-    public NodeCollection<T> Next { get; private set; }
+    public Node<T> Next { get; private set; }
 
-    public NodeCollection(T value)
+    public Node(T value)
     {
         Value = value;
         Next = this;
@@ -29,10 +30,10 @@ public class NodeCollection<T>
             throw new InvalidOperationException($"Value '{value}' already exists in the list.");
         }
 
-        NodeCollection<T> newNode = new NodeCollection<T>(value);
+        Node<T> newNode = new Node<T>(value);
 
         // Find the last node in the circular list (the one that points back to this)
-        NodeCollection<T> current = this;
+        Node<T> current = this;
         while (current.Next != this)
         {
             current = current.Next;
@@ -45,7 +46,7 @@ public class NodeCollection<T>
 
     public bool Exists(T value)
     {
-        NodeCollection<T> current = this;
+        Node<T> current = this;
 
         do
         {
@@ -85,4 +86,36 @@ public class NodeCollection<T>
         // The GC will collect them as they're now unreachable
     }
 
+    // Assignment 7 + 8 stuff below this line:
+
+    public IEnumerator<T> GetEnumerator()
+    {
+        Node<T> current = this;
+        do
+        {
+            yield return current.Value;
+            current = current.Next;
+        } while (current != this);
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    public IEnumerable<T> ChildItems(int maximum)
+    {
+        Node<T> current = this;
+        int count = 0;
+        do
+        {
+            if (count >= maximum)
+            {
+                yield break;
+            }
+            yield return current.Value;
+            current = current.Next;
+            count++;
+        } while (current != this);
+    }
 }
