@@ -51,14 +51,67 @@ public class SampleData : ISampleData
     public string GetAggregateSortedListOfStatesUsingCsvRows()
         => string.Join(", ", GetUniqueSortedListOfStatesGivenCsvRows());
 
-    // 4.
-    public IEnumerable<IPerson> People => throw new NotImplementedException();
+    /// <summary>
+    /// Projects every CSV row into a Person with a populated Address,
+    /// then returns the sequence sorted by State, City, and Zip.
+    /// Sorting is performed with case-insensitive comparers for consistent, 
+    /// deterministic ordering across platforms and datasets. Returning IEnumberable
+    /// keeps the sequence composable.
+    /// </summary>
+    public IEnumerable<IPerson> People => 
+        CsvRows.Select(ParseColumns)
+        .Select (cols =>
+        {
+            var addr = new Address(
+                streetAddress: cols[4],
+                city: cols[5],
+                state: cols[6],
+                zip: cols[7]
+            );
 
-    // 5.
+            return (IPerson)new Person(
+                firstName: cols[1],
+                lastName: cols[2],
+                address: addr,
+                emailAddress: cols[3]
+                );
+        })
+        .OrderBy(p => p.Address.State, StringComparer.OrdinalIgnoreCase)
+        .ThenBy(p => p.Address.City, StringComparer.OrdinalIgnoreCase)
+        .ThenBy(p => p.Address.Zip, StringComparer.OrdinalIgnoreCase)
+        .ToArray();
+
+    /// <summary>
+    /// Filters People by applying the provided Predicate to each person's EmailAddress,
+    /// returning a sequence of (FirstName, LastName) tuples for those that match.
+    /// This keeps the public surface tightly scoped to only the required data.
+    /// The tuple is lightweight and convenient for assertions.
+    /// </summary>
     public IEnumerable<(string FirstName, string LastName)> FilterByEmailAddress(
-        Predicate<string> filter) => throw new NotImplementedException();
+        Predicate<string> filter) => People
+        .Where(p => filter(p.EmailAddress))
+        .Select(p => (p.FirstName, p.LastName))
+        .ToArray();
 
-    // 6.
+    /// <summary>
+    /// Returns a comma-separated list of unique states present in the provided
+    /// people colletion. 
+    /// To keep outut deterministic and human-friendly, we make the set case-insensitive,
+    /// sort if, then aggregate into a single string. The sort also guarantees stable test
+    /// assertions. 
+    /// </summary>
     public string GetAggregateListOfStatesGivenPeopleCollection(
-        IEnumerable<IPerson> people) => throw new NotImplementedException();
+        IEnumerable<IPerson> people)
+    {
+        var orderdDistinctStates = people
+            .Select(p => p.Address.State)
+            .Where(s => !string.IsNullOrWhiteSpace(s))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(s => s, StringComparer.OrdinalIgnoreCase);
+
+        return orderdDistinctStates.Aggregate(
+            seed: "",
+            func: (acc, s) => string.IsNullOrEmpty(acc) ? s : $"{acc}, {s}");
+
+    }
 }
