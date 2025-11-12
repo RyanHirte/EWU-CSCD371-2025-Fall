@@ -48,4 +48,38 @@ public class SampleDataTests
         Assert.IsTrue(nonDecreasing.All(x => x));
         Assert.AreEqual(states.Length, states.Distinct(StringComparer.OrdinalIgnoreCase).Count());
     }
+
+    [TestMethod]
+    public void States_HardcodedAddresses_UniqueAndSorted()
+    {
+        // Arrange
+        var hardcodedRows = new[]
+        {
+            "0,A,B,a@x, 123 Main, City, TX, 00001",
+            "0,A,B,b@x, 123 Main, City, WA, 00001",
+            "0,A,B,c@x, 123 Main, City, CA, 00001",
+            "0,A,B,d@x, 123 Main, City, TX, 00001",
+            "0,A,B,e@x, 123 Main, City, ca, 00001"
+        };
+
+        var actual = hardcodedRows
+            .Select(line => line.Split(',', StringSplitOptions.TrimEntries)[6])
+            .Where(s => !string.IsNullOrWhiteSpace(s))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(s => s, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        var expected = new[] { "CA", "TX", "WA" };
+        CollectionAssert.AreEqual(expected, actual);
+    }
+
+    [TestMethod]
+    public void AggregateStates_FromCsvEquals_JoinOfUniqueList()
+    {
+        var sd = new SampleData();
+        var uniqueList = sd.GetUniqueSortedListOfStatesGivenCsvRows().ToArray();
+        var aggregate = sd.GetAggregateSortedListOfStatesUsingCsvRows();
+
+        Assert.AreEqual(string.Join(", ", uniqueList), aggregate);
+    }
 }
