@@ -7,6 +7,9 @@ namespace Assignment.Tests;
 [TestClass]
 public class SampleDataTests
 {
+    private static IPerson MakePerson(string firstName, string lastName, string street, string city, string state, string zip, string email)
+        => new Person(firstName, lastName, new Address(street, city, state, zip), email);
+    
     [TestMethod]
     public void CsvRows_ConstructedProperly_EnumeratesProperly()
     {
@@ -31,8 +34,8 @@ public class SampleDataTests
         // Act
         var csvRows = sampleData.CsvRows.ToArray();
         // Assert
-        Assert.IsGreaterThan(0, csvRows.Length);
-        Assert.DoesNotStartWith("Id,", csvRows[0]);
+        Assert.AreNotEqual(0, csvRows.Length);
+        Assert.IsFalse(csvRows[0].StartsWith("Id,", StringComparison.Ordinal));
         Assert.IsTrue(csvRows.All(r => !string.IsNullOrWhiteSpace(r)));
     }
 
@@ -82,4 +85,79 @@ public class SampleDataTests
 
         Assert.AreEqual(string.Join(", ", uniqueList), aggregate);
     }
+
+    [TestMethod]
+    public void People_MapAllColumnsAndSortByStateCityZip_Correctly()
+    {
+        // Arrange
+        SampleData sampleData = new();
+        var people = sampleData.People.ToArray();
+
+        // Act & Assert
+        Assert.IsGreaterThan(0, people.Length);
+        foreach (var person in people)
+        {
+            Assert.IsNotNull(person);
+            Assert.IsInstanceOfType(person, typeof(IPerson));
+            Assert.IsFalse(string.IsNullOrWhiteSpace(person.FirstName));
+            Assert.IsFalse(string.IsNullOrWhiteSpace(person.LastName));
+            Assert.IsFalse(string.IsNullOrWhiteSpace(person.EmailAddress));
+            Assert.IsFalse(string.IsNullOrWhiteSpace(person.Address.City));
+            Assert.IsFalse(string.IsNullOrWhiteSpace(person.Address.State));
+            Assert.IsFalse(string.IsNullOrWhiteSpace(person.Address.Zip));
+        }
+
+        var reSorted = people
+            .OrderBy(p => p.Address.State, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(p => p.Address.City, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(p => p.Address.Zip, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        CollectionAssert.AreEqual(reSorted, people);
+    }
+
+    [TestMethod]
+    public void FilterByEmailAddress_Returns_CorrectTuples()
+    {
+        // Arrange
+        SampleData sampleData = new();
+        var actual = sampleData.FilterByEmailAddress(email => email.EndsWith(".edu")).ToArray();
+        // Act
+        var expected = sampleData.People
+            .Where(p => p.EmailAddress.EndsWith(".edu"))
+            .Select(p => (p.FirstName, p.LastName))
+            .ToArray();
+        // Assert
+        CollectionAssert.AreEqual(expected, actual);
+    }
+
+    [TestMethod]
+    public void AggregateStatesFromPeople_UsesDistinctAndAggregate_Success()
+    {
+        // Arrange
+        SampleData sampleData = new();
+        // Act
+        var expected = string.Join(", ",
+            sampleData.People
+                .Select(p => p.Address.State)
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(s => s, StringComparer.OrdinalIgnoreCase)
+        );
+
+        var actual = sampleData.GetAggregateListOfStatesGivenPeopleCollection(sampleData.People);
+        // Assert
+        Assert.AreEqual(expected, actual);
+    }
+
+    [TestMethod]
+    public void AggregateStatesFromPeople_EmptyInput_ReturnsEmptyString()
+    {
+        // Arrange
+        SampleData sampleData = new();
+        // Act
+        var actual = sampleData.GetAggregateListOfStatesGivenPeopleCollection(Enumerable.Empty<IPerson>());
+        // Assert
+        Assert.AreEqual(string.Empty, actual);
+    }
+
 }
