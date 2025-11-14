@@ -87,6 +87,7 @@ public class Node<T> : IEnumerable<T>
     }
 
     // Assignment 7 + 8 stuff below this line:
+    // ----------------------------------------------
 
     public IEnumerator<T> GetEnumerator()
     {
