@@ -120,7 +120,7 @@ public class SampleDataTests
     {
         // Arrange
         SampleData sampleData = new();
-        var actual = sampleData.FilterByEmailAddress(email => email.EndsWith(".edu")).ToArray();
+        var actual = sampleData.FilterByEmailAddress(email => email.EndsWith(".edu", StringComparison.OrdinalIgnoreCase)).ToArray();
         // Act
         var expected = sampleData.People
             .Where(p => p.EmailAddress.EndsWith(".edu"))
