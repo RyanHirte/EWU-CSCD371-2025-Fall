@@ -46,7 +46,7 @@ public class SampleDataTests
         SampleData sampleData = new();
         var states = sampleData.GetUniqueSortedListOfStatesGivenCsvRows().ToArray();
         // Act
-        var nonDecreasing = states.Zip(states.Skip(1), (a, b) => string.Compare(a, b, true) <= 0);
+        var nonDecreasing = states.Zip(states.Skip(1), (a, b) => string.Compare(a, b, StringComparison.OrdinalIgnoreCase) <= 0);
         // Assert
         Assert.IsTrue(nonDecreasing.All(x => x));
         Assert.AreEqual(states.Length, states.Distinct(StringComparer.OrdinalIgnoreCase).Count());
