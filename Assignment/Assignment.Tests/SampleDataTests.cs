@@ -7,9 +7,6 @@ namespace Assignment.Tests;
 [TestClass]
 public class SampleDataTests
 {
-    private static IPerson MakePerson(string firstName, string lastName, string street, string city, string state, string zip, string email)
-        => new Person(firstName, lastName, new Address(street, city, state, zip), email);
-    
     [TestMethod]
     public void CsvRows_ConstructedProperly_EnumeratesProperly()
     {
@@ -46,7 +43,7 @@ public class SampleDataTests
         SampleData sampleData = new();
         var states = sampleData.GetUniqueSortedListOfStatesGivenCsvRows().ToArray();
         // Act
-        var nonDecreasing = states.Zip(states.Skip(1), (a, b) => string.Compare(a, b, true) <= 0);
+        var nonDecreasing = states.Zip(states.Skip(1), (a, b) => string.Compare(a, b, StringComparison.OrdinalIgnoreCase) <= 0);
         // Assert
         Assert.IsTrue(nonDecreasing.All(x => x));
         Assert.AreEqual(states.Length, states.Distinct(StringComparer.OrdinalIgnoreCase).Count());
@@ -98,7 +95,7 @@ public class SampleDataTests
         foreach (var person in people)
         {
             Assert.IsNotNull(person);
-            Assert.IsInstanceOfType(person, typeof(IPerson));
+            Assert.IsInstanceOfType<IPerson>(person);
             Assert.IsFalse(string.IsNullOrWhiteSpace(person.FirstName));
             Assert.IsFalse(string.IsNullOrWhiteSpace(person.LastName));
             Assert.IsFalse(string.IsNullOrWhiteSpace(person.EmailAddress));
@@ -120,10 +117,10 @@ public class SampleDataTests
     {
         // Arrange
         SampleData sampleData = new();
-        var actual = sampleData.FilterByEmailAddress(email => email.EndsWith(".edu")).ToArray();
+        var actual = sampleData.FilterByEmailAddress(email => email.EndsWith(".edu", StringComparison.OrdinalIgnoreCase)).ToArray();
         // Act
         var expected = sampleData.People
-            .Where(p => p.EmailAddress.EndsWith(".edu"))
+            .Where(p => p.EmailAddress.EndsWith(".edu", StringComparison.OrdinalIgnoreCase))
             .Select(p => (p.FirstName, p.LastName))
             .ToArray();
         // Assert

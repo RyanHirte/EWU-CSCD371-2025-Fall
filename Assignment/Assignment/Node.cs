@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Assignment;
 
-// Taken from Ryan Hirte and Yoko Parks assignment 5
+// Taken from Ryan Hirte and Yoko Parks assignment 5.
 public class Node<T> : IEnumerable<T>
 {
     public T Value { get; set; }
