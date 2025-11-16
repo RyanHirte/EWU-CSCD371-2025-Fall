@@ -58,9 +58,15 @@ public class SampleDataAsync : IAsyncSampleData
 
     }
 
-    public IAsyncEnumerable<(string FirstName, string LastName)> FilterByEmailAddress(Predicate<string> filter)
+    public async IAsyncEnumerable<(string FirstName, string LastName)> FilterByEmailAddress(Predicate<string> filter)
     {
-        throw new NotImplementedException();
+        await foreach (Person person in People)
+        {
+            if (filter(person.EmailAddress))
+            {
+                yield return (person.FirstName, person.LastName);
+            }
+        }
     }
 
     public string GetAggregateListOfStatesGivenPeopleCollection(IAsyncEnumerable<IPerson> people)

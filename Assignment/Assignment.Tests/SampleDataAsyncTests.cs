@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,5 +29,21 @@ public class SampleDataAsyncTests
 
         Assert.IsNotNull(people);
         Assert.IsTrue(people.All(person => person is Person), "Not everyone in the list is a Person object.");
+    }
+
+    [TestMethod]
+    public async Task FilterByEmailAddress_PeopleFromCsv_ReturnsFilteredTuples()
+    {
+        SampleDataAsync testSampleData = new();
+
+        var expected = testSampleData.People
+            .Where(person => person.EmailAddress.EndsWith(".edu", System.StringComparison.OrdinalIgnoreCase))
+            .Select(person => (person.FirstName, person.LastName))
+            .ToListAsync();
+
+        var actual = await testSampleData.FilterByEmailAddress(email => email.EndsWith(".edu", System.StringComparison.OrdinalIgnoreCase)).ToListAsync();
+
+        Assert.IsNotNull(actual);
+        CollectionAssert.AreEqual(expected.Result, actual);
     }
 }
