@@ -15,7 +15,7 @@ public class SampleDataAsyncTests
         var csvRows = await testSampleData.CsvRows.ToListAsync();
 
         Assert.IsNotNull(csvRows);
-        Assert.IsFalse(csvRows.Any(line => line.StartsWith("Id")));
+        Assert.IsFalse(csvRows.Any(line => line.StartsWith("Id", System.StringComparison.OrdinalIgnoreCase)));
         Assert.IsTrue(csvRows.All(line => line is string));
     }
 }
