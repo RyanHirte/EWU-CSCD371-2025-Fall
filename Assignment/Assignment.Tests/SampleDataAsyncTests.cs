@@ -44,6 +44,6 @@ public class SampleDataAsyncTests
         var actual = await testSampleData.FilterByEmailAddress(email => email.EndsWith(".edu", System.StringComparison.OrdinalIgnoreCase)).ToListAsync();
 
         Assert.IsNotNull(actual);
-        CollectionAssert.AreEqual(expected.Result, actual);
+        CollectionAssert.AreEqual(await expected, actual);
     }
 }
