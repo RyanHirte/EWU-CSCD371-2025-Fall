@@ -10,7 +10,7 @@ public class SampleDataAsync : IAsyncSampleData
 {
     public IAsyncEnumerable<string> CsvRows => GetCsvRows();
 
-    private async IAsyncEnumerable<string> GetCsvRows()
+    private static async IAsyncEnumerable<string> GetCsvRows()
     {
         bool isFirst = true;
         await foreach (var line in File.ReadLinesAsync("People.csv"))
