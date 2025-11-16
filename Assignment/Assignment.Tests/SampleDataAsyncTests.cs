@@ -18,4 +18,15 @@ public class SampleDataAsyncTests
         Assert.IsFalse(csvRows.Any(line => line.StartsWith("Id", System.StringComparison.OrdinalIgnoreCase)));
         Assert.IsTrue(csvRows.All(line => line is string));
     }
+
+    [TestMethod]
+    public async Task People_FromCsv_ReturnsEnumerableOfPerson()
+    {
+        SampleDataAsync testSampleData = new();
+
+        var people = await testSampleData.People.ToListAsync();
+
+        Assert.IsNotNull(people);
+        Assert.IsTrue(people.All(person => person is Person), "Not everyone in the list is a Person object.");
+    }
 }
