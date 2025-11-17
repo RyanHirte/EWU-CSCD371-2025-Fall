@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Assignment;
 
@@ -71,16 +72,73 @@ public class SampleDataAsync : IAsyncSampleData
 
     public string GetAggregateListOfStatesGivenPeopleCollection(IAsyncEnumerable<IPerson> people)
     {
-        throw new NotImplementedException();
+        List<string> states = [];
+
+        var enumerator = people.GetAsyncEnumerator();
+        try
+        {
+            while (enumerator.MoveNextAsync().AsTask().Result)
+            {
+                var person = enumerator.Current;
+                states.Add(person.Address.State);
+            }
+            states = states.Distinct().ToList();
+            states.Sort(StringComparer.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            enumerator.DisposeAsync().AsTask().Wait();
+        }
+
+        return string.Join(", ", states);
     }
 
     public string GetAggregateSortedListOfStatesUsingCsvRows()
     {
-        throw new NotImplementedException();
+        List<string> states = [];
+        IAsyncEnumerable<string> rows = CsvRows;
+
+        var enumerator = rows.GetAsyncEnumerator();
+        try
+        {
+            while (enumerator.MoveNextAsync().AsTask().Result)
+            {
+                var row = enumerator.Current;
+                var cols = ParseColumns(row);
+                states.Add(cols[6]);
+            }
+            states = states
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(s => s, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+        }
+        finally
+        {
+            enumerator.DisposeAsync().AsTask().Wait();
+        }
+
+        return string.Join(", ", states);
     }
 
-    public IAsyncEnumerable<string> GetUniqueSortedListOfStatesGivenCsvRows()
+    public async IAsyncEnumerable<string> GetUniqueSortedListOfStatesGivenCsvRows()
     {
-        throw new NotImplementedException();
+        List<string> states = [];
+
+        await foreach (var row in CsvRows)
+        {
+            var cols = ParseColumns(row);
+            var state = cols[6];
+            if (!string.IsNullOrWhiteSpace(state) && !states.Contains(state, StringComparer.OrdinalIgnoreCase))
+            {
+                states.Add(state);
+            }
+        }
+
+        var sortedStates = states.OrderBy(s => s, StringComparer.OrdinalIgnoreCase);
+        foreach (var state in sortedStates)
+        {
+            yield return state;
+        }
     }
 }

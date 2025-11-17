@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -46,4 +47,50 @@ public class SampleDataAsyncTests
         Assert.IsNotNull(actual);
         CollectionAssert.AreEqual(await expected, actual);
     }
+
+    [TestMethod]
+    public async Task GetAggregateListOfStatesGivenPeopleCollection_PeopleFromCsv_ReturnsCorrectAggregateString()
+    {
+        SampleDataAsync testSampleData = new();
+        var people = testSampleData.People;
+        string aggregateStates = testSampleData.GetAggregateListOfStatesGivenPeopleCollection(people);
+        var expectedStates = await people
+            .Select(person => person.Address.State)
+            .Where(state => !string.IsNullOrWhiteSpace(state))
+            .Distinct(System.StringComparer.OrdinalIgnoreCase)
+            .OrderBy(state => state, System.StringComparer.OrdinalIgnoreCase)
+            .ToListAsync();
+        var expectedAggregate = string.Join(", ", expectedStates);
+        Assert.AreEqual<string>(expectedAggregate, aggregateStates);
+    }
+
+    [TestMethod]
+    public async Task GetAggregateSortedListOfStatesUsingCsvRows_UsingCsvRows_ReturnsCorrectAggregateString()
+    {
+        SampleDataAsync testSampleData = new();
+        string aggregateStates = testSampleData.GetAggregateSortedListOfStatesUsingCsvRows();
+        var expectedStates = await testSampleData.CsvRows
+            .Select(row => row.Split(',', StringSplitOptions.TrimEntries)[6])
+            .Where(state => !string.IsNullOrWhiteSpace(state))
+            .Distinct(System.StringComparer.OrdinalIgnoreCase)
+            .OrderBy(state => state, System.StringComparer.OrdinalIgnoreCase)
+            .ToListAsync();
+        var expectedAggregate = string.Join(", ", expectedStates);
+        Assert.AreEqual<string>(expectedAggregate, aggregateStates);
+    }
+
+    [TestMethod]
+    public async Task GetUniqueSortedListOfStatesGivenCsvRows_UsingCsvRows_ReturnsCorrectStateList()
+    {
+        SampleDataAsync testSampleData = new();
+        var stateList = testSampleData.GetUniqueSortedListOfStatesGivenCsvRows();
+        var expectedStates = await testSampleData.CsvRows
+            .Select(row => row.Split(',', StringSplitOptions.TrimEntries)[6])
+            .Where(state => !string.IsNullOrWhiteSpace(state))
+            .Distinct(System.StringComparer.OrdinalIgnoreCase)
+            .OrderBy(state => state, System.StringComparer.OrdinalIgnoreCase)
+            .ToListAsync();
+        CollectionAssert.AreEqual(expectedStates, await stateList.ToListAsync());
+    }
+
 }
