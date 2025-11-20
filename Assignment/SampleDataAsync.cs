@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Assignment;
 
@@ -24,8 +23,6 @@ public class SampleDataAsync : IAsyncSampleData
         }
     }
 
-    private static string[] ParseColumns(string row) => row.Split(',', StringSplitOptions.TrimEntries);
-
     public IAsyncEnumerable<IPerson> People => GetPeople();
 
     private async IAsyncEnumerable<IPerson> GetPeople()
@@ -33,7 +30,7 @@ public class SampleDataAsync : IAsyncSampleData
         List<IPerson> people = [];
         await foreach (var row in CsvRows)
         {
-            var cols = ParseColumns(row);
+            var cols = SampleDataCommon.ParseColumns(row);
             var addr = new Address(
                 streetAddress: cols[4],
                 city: cols[5],
@@ -104,7 +101,7 @@ public class SampleDataAsync : IAsyncSampleData
             while (enumerator.MoveNextAsync().AsTask().Result)
             {
                 var row = enumerator.Current;
-                var cols = ParseColumns(row);
+                var cols = SampleDataCommon.ParseColumns(row);
                 states.Add(cols[6]);
             }
             states = states
@@ -127,7 +124,7 @@ public class SampleDataAsync : IAsyncSampleData
 
         await foreach (var row in CsvRows)
         {
-            var cols = ParseColumns(row);
+            var cols = SampleDataCommon.ParseColumns(row);
             var state = cols[6];
             if (!string.IsNullOrWhiteSpace(state) && !states.Contains(state, StringComparer.OrdinalIgnoreCase))
             {
