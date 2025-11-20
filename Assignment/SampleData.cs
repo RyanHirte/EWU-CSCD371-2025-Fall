@@ -51,23 +51,11 @@ public class SampleData : ISampleData
     /// deterministic ordering across platforms and datasets. Returning IEnumberable
     /// keeps the sequence composable.
     /// </summary>
-    public IEnumerable<IPerson> People => 
+    public IEnumerable<IPerson> People =>
         CsvRows.Select(SampleDataCommon.ParseColumns)
-        .Select (cols =>
+        .Select(cols =>
         {
-            var addr = new Address(
-                streetAddress: cols[4],
-                city: cols[5],
-                state: cols[6],
-                zip: cols[7]
-            );
-
-            return (IPerson)new Person(
-                firstName: cols[1],
-                lastName: cols[2],
-                address: addr,
-                emailAddress: cols[3]
-                );
+            return SampleDataCommon.CreatePersonFromRow(cols);
         })
         .OrderBy(p => p.Address.State, StringComparer.OrdinalIgnoreCase)
         .ThenBy(p => p.Address.City, StringComparer.OrdinalIgnoreCase)

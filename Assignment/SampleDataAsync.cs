@@ -31,19 +31,7 @@ public class SampleDataAsync : IAsyncSampleData
         await foreach (var row in CsvRows)
         {
             var cols = SampleDataCommon.ParseColumns(row);
-            var addr = new Address(
-                streetAddress: cols[4],
-                city: cols[5],
-                state: cols[6],
-                zip: cols[7]
-            );
-
-            people.Add((IPerson)new Person(
-                firstName: cols[1],
-                lastName: cols[2],
-                address: addr,
-                emailAddress: cols[3]
-                ));
+            people.Add(SampleDataCommon.CreatePersonFromRow(cols));
         }
         var sorted = people
             .OrderBy(person => person.Address.State, StringComparer.OrdinalIgnoreCase)
