@@ -55,7 +55,7 @@ public class SampleData : ISampleData
     /// Projects every CSV row into a Person with a populated Address,
     /// then returns the sequence sorted by State, City, and Zip.
     /// Sorting is performed with case-insensitive comparers for consistent, 
-    /// deterministic ordering across platforms and datasets. Returning IEnumberable
+    /// deterministic ordering across platforms and datasets. Returning IEnumerable
     /// keeps the sequence composable.
     /// </summary>
     public IEnumerable<IPerson> People => 
@@ -95,21 +95,21 @@ public class SampleData : ISampleData
 
     /// <summary>
     /// Returns a comma-separated list of unique states present in the provided
-    /// people colletion. 
-    /// To keep outut deterministic and human-friendly, we make the set case-insensitive,
-    /// sort if, then aggregate into a single string. The sort also guarantees stable test
+    /// people collection. 
+    /// To keep output deterministic and human-friendly, we make the set case-insensitive,
+    /// sort it, then aggregate into a single string. The sort also guarantees stable test
     /// assertions. 
     /// </summary>
     public string GetAggregateListOfStatesGivenPeopleCollection(
         IEnumerable<IPerson> people)
     {
-        var orderdDistinctStates = people
+        var orderedDistinctStates = people
             .Select(p => p.Address.State)
             .Where(s => !string.IsNullOrWhiteSpace(s))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(s => s, StringComparer.OrdinalIgnoreCase);
 
-        return orderdDistinctStates.Aggregate(
+        return orderedDistinctStates.Aggregate(
             seed: "",
             func: (acc, s) => string.IsNullOrEmpty(acc) ? s : $"{acc}, {s}");
 

@@ -84,7 +84,7 @@ public class SampleDataTests
     }
 
     [TestMethod]
-    public void People_MapAllColumnsAndSortByStateCityZip_Correctly()
+    public void People_MapAllColumnsAndSortByStateCityZipCorrectly_Success()
     {
         // Arrange
         SampleData sampleData = new();
