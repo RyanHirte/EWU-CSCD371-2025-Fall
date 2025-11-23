@@ -21,20 +21,13 @@ public class SampleData : ISampleData
     public IEnumerable<string> CsvRows => File.ReadAllLines("People.csv").Skip(1).Select(line => line.Trim());
 
     /// <summary>
-    /// Splits a comma-delimited row into columns.
-    /// This centralizes parsing to keep other methods focused on their logic.
-    /// This dataset does not contain quoted commas, so a simple split is sufficient.
-    /// </summary>
-    private static string[] ParseColumns(string row) => row.Split(',', StringSplitOptions.TrimEntries);
-
-    /// <summary>
     /// Returns an alphabetical, case-insensitive, unique list of state abbreviations
     /// derived from CsvRows.
     /// Uses Distinct with StringComparer.OrdinalIgnoreCase so that "CA" and "ca" are
     /// treated as the same key.
     /// </summary>
     public IEnumerable<string> GetUniqueSortedListOfStatesGivenCsvRows()
-        => CsvRows.Select(ParseColumns)
+        => CsvRows.Select(SampleDataCommon.ParseColumns)
         .Select(cols => cols[6])
         .Where(s => !string.IsNullOrWhiteSpace(s))
         .Distinct(StringComparer.OrdinalIgnoreCase)
@@ -58,23 +51,11 @@ public class SampleData : ISampleData
     /// deterministic ordering across platforms and datasets. Returning IEnumerable
     /// keeps the sequence composable.
     /// </summary>
-    public IEnumerable<IPerson> People => 
-        CsvRows.Select(ParseColumns)
-        .Select (cols =>
+    public IEnumerable<IPerson> People =>
+        CsvRows.Select(SampleDataCommon.ParseColumns)
+        .Select(cols =>
         {
-            var addr = new Address(
-                streetAddress: cols[4],
-                city: cols[5],
-                state: cols[6],
-                zip: cols[7]
-            );
-
-            return (IPerson)new Person(
-                firstName: cols[1],
-                lastName: cols[2],
-                address: addr,
-                emailAddress: cols[3]
-                );
+            return SampleDataCommon.CreatePersonFromRow(cols);
         })
         .OrderBy(p => p.Address.State, StringComparer.OrdinalIgnoreCase)
         .ThenBy(p => p.Address.City, StringComparer.OrdinalIgnoreCase)
